@@ -10,6 +10,7 @@ use File::Spec::Functions qw(catfile);
 # <!-- #perl sub="..."--> tests
 
 plan tests => 9, (have_lwp &&
+                  have_module('mod_perl.c') &&
                   have_module('include'));
 
 foreach my $file (qw(empty die undefined good multi named method anondie anongood)) {
@@ -29,7 +30,8 @@ foreach my $file (qw(empty die undefined good multi named method anondie anongoo
                   join ' : ', @args :
                   'no args';
 
-  t_write_file(catfile('htdocs', "perl-sub-$file.shtml"), $html);
+  t_write_file(catfile(Apache::Test::vars('serverroot'),
+                       'htdocs', "perl-sub-$file.shtml"), $html);
 
   my $response = GET "/ssi/perl-sub-$file.shtml";
   chomp(my $content = $response->content);

@@ -10,6 +10,7 @@ use File::Spec::Functions qw(catfile);
 # multi-tag tests
 
 plan tests => 3, (have_lwp &&
+                  have_module('mod_perl.c') &&
                   have_module('include'));
 
 my @lines = <DATA>;
@@ -40,7 +41,8 @@ foreach my $file (qw(one two three)) {
 
   chomp $output;
 
-  t_write_file(catfile('htdocs', "perl-multi-$file.shtml"), @file);
+  t_write_file(catfile(Apache::Test::vars('serverroot'),
+                       'htdocs', "perl-multi-$file.shtml"), @file);
 
   my $response = GET "/ssi/perl-multi-$file.shtml";
   chomp(my $content = $response->content);

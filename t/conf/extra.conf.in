@@ -1,10 +1,3 @@
-LogLevel debug
-
-PerlModule Apache::IncludeHook
-PerlModule My::PrintArgs
-PerlModule My::Nada
-PerlModule My::Subrequest
-
 Alias /ssi @DocumentRoot@
 <Location /ssi>
   AddType text/html .shtml
@@ -19,14 +12,21 @@ Alias /noexec @DocumentRoot@
   Options +Includes +IncludesNOEXEC
 </Location>
 
-Alias /cgi-bin @ServerRoot@/cgi-bin
-<Location /cgi-bin>
-  SetHandler cgi-script
-                                                                                                    
-  SetOutputFilter INCLUDES
-  PerlOutputFilterHandler My::Filter
-                                                                                                    
-  Options +ExecCGI +Includes
-</Location>
-
 SSIUndefinedEcho "ECHO... ECHO... ECHO"
+
+<IfModule mod_perl.c>
+  PerlModule Apache::IncludeHook
+  PerlModule My::PrintArgs
+  PerlModule My::Nada
+  PerlModule My::Subrequest
+
+  Alias /cgi-bin @ServerRoot@/cgi-bin
+  <Location /cgi-bin>
+    SetHandler cgi-script
+
+    SetOutputFilter INCLUDES
+    PerlOutputFilterHandler My::Filter
+
+    Options +ExecCGI +Includes
+  </Location>
+</IfModule>

@@ -138,19 +138,20 @@ static int handle_perl(include_ctx_t *ctx, apr_bucket_brigade **bb,
                    "Apache::IncludeHook - found sub '%s'", 
                    tag_val);
   
-        if (! (sub = modperl_mgv_name_from_sv(aTHX_ p, newSVpv(tag_val, 0))) ) {
-  
+        handler = modperl_handler_new_from_sv(aTHX_ p,  newSVpv(tag_val, 0));
+
+        if (handler) {
+          MP_TRACE_f(MP_FUNC,
+                     "Apache::IncludeHook - isolated Perl handler '%s'", 
+                      modperl_handler_name(handler));
+        }
+        else {
           ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                         "couldn't find handler for \"%s\" ",
                         tag_val);
   
           CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
           REFCNT_AND_ERROR(buffer, obj, av, hv, APR_SUCCESS);
-        }
-        else {
-          MP_TRACE_f(MP_FUNC,
-                     "Apache::IncludeHook - isolated Perl handler '%s'", 
-                     sub);
         }
 
         seen_sub++;
@@ -173,20 +174,22 @@ static int handle_perl(include_ctx_t *ctx, apr_bucket_brigade **bb,
                sub);
 
     /* bless { _r => $r, _b => \$buffer }, $class */
-    hv_store(hv, "_r", 2,  modperl_ptr2obj(aTHX_ "Apache::RequestRec", r), FALSE);
-    hv_store(hv, "_b", 2,  newRV_inc(buffer), FALSE);
-    obj = newRV_noinc((SV *)hv);
-    sv_bless(obj, gv_stashpv("Apache::IncludeHook", TRUE));
+    {
+      hv_store(hv, "_r", 2,  modperl_ptr2obj(aTHX_ "Apache::RequestRec", r), FALSE);
+      hv_store(hv, "_b", 2,  newRV_inc(buffer), FALSE);
+      obj = newRV_noinc((SV *)hv);
+      sv_bless(obj, gv_stashpv("Apache::IncludeHook", TRUE));
+    }
 
     /* tie STDOUT, $class */
-    dHANDLE("STDOUT");
-    sv_unmagic(TIEHANDLE_SV(handle), 'q');
-    sv_magic(TIEHANDLE_SV(handle), obj, 'q', Nullch, 0);
+    {
+      dHANDLE("STDOUT");
+      sv_unmagic(TIEHANDLE_SV(handle), 'q');
+      sv_magic(TIEHANDLE_SV(handle), obj, 'q', Nullch, 0);
+    }
 
     av_unshift(av, 1);
     av_store(av, 0, obj);
-
-    handler = modperl_handler_new(p, apr_pstrdup(p, sub));
 
     if ((status = modperl_callback(aTHX_ handler, p, r, s, av)) != OK) {
       status = modperl_errsv(aTHX_ status, r, s);
@@ -241,7 +244,7 @@ static int handle_perl(include_ctx_t *ctx, apr_bucket_brigade **bb,
   SvREFCNT_dec(obj);
   SvREFCNT_dec(buffer);
 
-  MP_dINTERP_PUTBACK(interp);
+  MP_INTERP_PUTBACK(interp);
 
   MP_TRACE_f(MP_FUNC, "final reference counts: buffer=%d, obj=%d, av=%d, hv=%d\n",
                       SvREFCNT(buffer), SvREFCNT(obj), 
@@ -272,10 +275,11 @@ static int register_perl(apr_pool_t *p, apr_pool_t *plog,
   return OK;
 }
 
+static const char * const aszPre[] = { "mod_include.c", NULL };
+
 MODULE = Apache::IncludeHook		PACKAGE = Apache::IncludeHook		
 
 PROTOTYPES: DISABLE
 
   BOOT:
-    static const char * const aszPre[] = { "mod_include.c", NULL };
     ap_hook_post_config(register_perl, aszPre, NULL, APR_HOOK_FIRST);

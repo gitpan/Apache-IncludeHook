@@ -3,3 +3,6 @@ Revision history for Perl extension Apache::IncludeHook
 2.00_01  09.15.2003
   - original version
 
+2.00_02  05.10.2004
+  - updates for the latest mod_perl
+

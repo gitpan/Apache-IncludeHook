@@ -19,3 +19,4 @@ t/My/Subrequest.pm
 t/My/Filter.pm
 t/conf/extra.conf.in
 ToDo
+META.yml                                 Module meta-data (added by MakeMaker)

@@ -10,6 +10,7 @@ use File::Spec::Functions qw(catfile);
 # tests for handlers that run subrequests
 
 plan tests => 5, (have_lwp &&
+                  have_module('mod_perl.c') &&
                   have_module('include') &&
                   have { 'subrequests under construction' => 0 } );
 
@@ -30,7 +31,8 @@ foreach my $file (qw(flat noexec parsed anon)) {
     $html .= join '', <DATA>;
   }
 
-  t_write_file(catfile('htdocs', "perl-subreq-$file.shtml"), $html);
+  t_write_file(catfile(Apache::Test::vars('serverroot'),
+                       'htdocs', "perl-subreq-$file.shtml"), $html);
 
   my $response = GET "/ssi/perl-subreq-$file.shtml";
   chomp(my $content = $response->content);
@@ -42,7 +44,6 @@ foreach my $file (qw(flat noexec parsed anon)) {
            q!perl [an error occurred while processing this directive] here!,
            $content, 
            $test);
-#exit;
 }
 
 # format:

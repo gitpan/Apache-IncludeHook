@@ -11,10 +11,14 @@ use File::Spec::Functions qw(catfile);
 
 plan tests => 1, (have_lwp && 
                   have_cgi &&
+                  have_module('mod_perl.c') &&
                   have_module('include'));
 
 my @lines = <DATA>;
-t_write_perl_script(catfile(qw(cgi-bin include.cgi)), @lines[0,1]);
+my $file = catfile(Apache::Test::vars('serverroot'),
+                   qw(cgi-bin include.cgi));
+
+t_write_perl_script($file, @lines);
 
 my $response = GET '/cgi-bin/include.cgi';
 chomp(my $content = $response->content);

@@ -11,11 +11,17 @@ use Apache::TestRunPerl ();
 Apache::TestMM::filter_args();
 
 # provide the test harness
-Apache::TestRunPerl->generate_script();
+Apache::TestRunPerl->generate_script(bugreport => <<EOF);
++-------------------------------------------------------------------+
+| this module is experimental, use at your own risk                 |
++-------------------------------------------------------------------+
+EOF
+
+#Apache::TestRunPerl->generate_script();
 
 # now, write out the Makefile
 ModPerl::MM::WriteMakefile(
   NAME          => 'Apache::IncludeHook',
   VERSION_FROM  => 'IncludeHook.pm',
-  PREREQ_PM     => { mod_perl    => 1.9910 },
+  PREREQ_PM     => { mod_perl    => 1.9913 },
 );

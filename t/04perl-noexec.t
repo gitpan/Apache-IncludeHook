@@ -10,12 +10,14 @@ use File::Spec::Functions qw(catfile);
 # Options +IncludesNOEXEC
 
 plan tests => 1, (have_lwp &&
+                  have_module('mod_perl.c') &&
                   have_module('include'));
 
 foreach my $file (qw(normal)) {
   my $line = <DATA>;
 
-  t_write_file(catfile('htdocs', "perl-noexec-$file.shtml"), $line);
+  t_write_file(catfile(Apache::Test::vars('serverroot'),
+                       'htdocs', "perl-noexec-$file.shtml"), $line);
 
   my $response = GET "/noexec/perl-noexec-$file.shtml";
   chomp(my $content = $response->content);

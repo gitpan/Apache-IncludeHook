@@ -9,7 +9,7 @@ use APR::Const -compile => qw(SUCCESS);
 use DynaLoader ();
 
 our @ISA = qw(DynaLoader Apache::RequestRec);
-our $VERSION = '2.00_01';
+our $VERSION = '2.00_02';
 
 __PACKAGE__->bootstrap($VERSION);
 
@@ -62,7 +62,7 @@ implementaiton of this tag.
 
 The current hope with this module is simply to carry over #perl tag
 support from Apache 1.3 to 2.0.  Apache::SSI-like support
-for custom tags will (possibly come later).  keep in mind
+for custom tags will (possibly) come later.  keep in mind
 that while this module is not inteneded to replace the old
 Apache::SSI for Apache 1.3, because the new Apache 2.0 API 
 includes a filtering mechansim,

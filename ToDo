@@ -1,0 +1,10 @@
+- allow for both $r->print and the filter interface
+  this probably means that there will be $self->f()
+  and $self->bb() accessor methods, since @args is set
+  as long as we support the old ($r, @args) = @_ interface.
+
+- subrequests
+
+- clean up the rather messy test suite and XS code
+
+- Apache::SSI-esque subclassing functionality

@@ -46,7 +46,7 @@ static int handle_perl(include_ctx_t *ctx, apr_bucket_brigade **bb,
   server_rec  *s     = r->server;
   apr_pool_t  *p     = r->pool;
 
-  modperl_handler_t  *handler;
+  modperl_handler_t  *handler = NULL;
   apr_bucket         *tmp_buck;
   apr_bucket         *b_new;
   apr_bucket_brigade *bb_new;
@@ -175,7 +175,7 @@ static int handle_perl(include_ctx_t *ctx, apr_bucket_brigade **bb,
 
     /* bless { _r => $r, _b => \$buffer }, $class */
     {
-      hv_store(hv, "_r", 2,  modperl_ptr2obj(aTHX_ "Apache::RequestRec", r), FALSE);
+      hv_store(hv, "_r", 2,  modperl_ptr2obj(aTHX_ "Apache2::RequestRec", r), FALSE);
       hv_store(hv, "_b", 2,  newRV_inc(buffer), FALSE);
       obj = newRV_noinc((SV *)hv);
       sv_bless(obj, gv_stashpv("Apache::IncludeHook", TRUE));
@@ -190,6 +190,9 @@ static int handle_perl(include_ctx_t *ctx, apr_bucket_brigade **bb,
 
     av_unshift(av, 1);
     av_store(av, 0, obj);
+
+    /* set up rcfg->wbucket */
+    modperl_response_init(r);
 
     if ((status = modperl_callback(aTHX_ handler, p, r, s, av)) != OK) {
       status = modperl_errsv(aTHX_ status, r, s);

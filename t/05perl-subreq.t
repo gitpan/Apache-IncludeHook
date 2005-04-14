@@ -9,12 +9,12 @@ use File::Spec::Functions qw(catfile);
 
 # tests for handlers that run subrequests
 
-plan tests => 5, (have_lwp &&
-                  have_module('mod_perl.c') &&
-                  have_module('include') &&
-                  have { 'subrequests under construction' => 0 } );
+plan tests => 4, (need_lwp &&
+                  need_module('mod_perl.c') &&
+                  need_module('include'));
 
-t_write_file(catfile('htdocs', 'flat.shtml'), 
+t_write_file(catfile(Apache::Test::vars('serverroot'),
+             'htdocs', 'flat.shtml'), 
              '<!-- #echo var="INCLUDE_HOOK" -->');
 
 foreach my $file (qw(flat noexec parsed anon)) {
@@ -34,15 +34,18 @@ foreach my $file (qw(flat noexec parsed anon)) {
   t_write_file(catfile(Apache::Test::vars('serverroot'),
                        'htdocs', "perl-subreq-$file.shtml"), $html);
 
+  skip ('subrequests will not invoke the SSI engine (yet)', 1) && next
+    unless $file eq 'flat';
+
   my $response = GET "/ssi/perl-subreq-$file.shtml";
   chomp(my $content = $response->content);
 
-  ok t_cmp($ok ? 
-             $ok == 1 ? 
-             'ECHO... ECHO... ECHO' :
-             '<!-- #echo var="INCLUDE_HOOK" -->' :
-           q!perl [an error occurred while processing this directive] here!,
-           $content, 
+  ok t_cmp($content,
+           $ok                                     ? 
+             $ok == 1                 ? 
+               'ECHO... ECHO... ECHO' :
+               'perl <!-- #echo var="INCLUDE_HOOK" --> here' :
+             q!perl [an error occurred while processing this directive] here!,
            $test);
 }
 
@@ -58,14 +61,13 @@ __END__
 1|perl <!--#perl arg="/ssi/flat.shtml" sub="My::Subrequest" --> here
 1|perl <!--#perl arg="/ssi/flat.shtml" sub="sub {
 
-  use Apache::RequestRec ();
-  use Apache::SubRequest ();
+  use Apache2::RequestRec ();
+  use Apache2::SubRequest ();
 
   my ($r, $uri) = @_;
 
-  $r->lookup_uri($uri);
-  $r->run;
+  $r->lookup_uri($uri)->run;
 
-  return Apache::OK;
+  return Apache2::Const2::OK;
 }" --> here
 

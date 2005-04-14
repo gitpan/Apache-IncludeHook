@@ -1,11 +1,11 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         Apache-IncludeHook
-version:      2.00_02
+version:      2.00_04
 version_from: IncludeHook.pm
 installdirs:  site
 requires:
-    mod_perl:                      1.9913
+    mod_perl2:                     0
 
 distribution_type: module
 generated_by: ExtUtils::MakeMaker version 6.17

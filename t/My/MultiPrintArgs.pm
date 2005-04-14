@@ -1,7 +1,7 @@
 package My::MultiPrintArgs;
 
-use Apache::RequestRec ();
-use Apache::Const -compile => 'OK';
+use Apache2::RequestRec ();
+use Apache2::Const -compile => 'OK';
 
 use strict;
 
@@ -15,7 +15,7 @@ sub handler {
   print join ' : ', @args;
   $r->print(' ***');
 
-  return Apache::OK;
+  return Apache2::Const::OK;
 }
 
 1;

@@ -9,9 +9,9 @@ use File::Spec::Functions qw(catfile);
 
 # <!-- #perl arg="foo" sub="..."--> tests
 
-plan tests => 5, (have_lwp &&
-                  have_module('mod_perl.c') &&
-                  have_module('include'));
+plan tests => 5, (need_lwp &&
+                  need_module('mod_perl.c') &&
+                  need_module('include'));
 
 foreach my $file (qw(empty good multi method anon)) {
   my $line = <DATA>;
@@ -38,10 +38,10 @@ foreach my $file (qw(empty good multi method anon)) {
   my $response = GET "/ssi/perl-arg-$file.shtml";
   chomp(my $content = $response->content);
 
-  ok t_cmp($ok ? 
-           qq!perl *** $argstring *** here! :
-           q!perl [an error occurred while processing this directive] here!,
-           $content, 
+  ok t_cmp($content,
+           $ok                                ? 
+             qq!perl *** $argstring *** here! :
+             q!perl [an error occurred while processing this directive] here!,
            $test);
 #exit;
 }
@@ -62,6 +62,6 @@ __END__
 
   $r->print(join ' ', '***', (join ' : ', @args), '***');
 
-  return Apache::OK;
+  return Apache2::Const::OK;
 
 }" --> here

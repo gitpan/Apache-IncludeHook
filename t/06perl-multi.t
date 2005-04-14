@@ -9,9 +9,9 @@ use File::Spec::Functions qw(catfile);
 
 # multi-tag tests
 
-plan tests => 3, (have_lwp &&
-                  have_module('mod_perl.c') &&
-                  have_module('include'));
+plan tests => 3, (need_lwp &&
+                  need_module('mod_perl.c') &&
+                  need_module('include'));
 
 my @lines = <DATA>;
 
@@ -47,8 +47,8 @@ foreach my $file (qw(one two three)) {
   my $response = GET "/ssi/perl-multi-$file.shtml";
   chomp(my $content = $response->content);
 
-  ok t_cmp($output,
-           $content, 
+  ok t_cmp($content,
+           $output,
            "die in tag $file");
 }
 

@@ -9,10 +9,10 @@ use File::Spec::Functions qw(catfile);
 
 # test mod_cgi + #perl + custom filter
 
-plan tests => 1, (have_lwp && 
-                  have_cgi &&
-                  have_module('mod_perl.c') &&
-                  have_module('include'));
+plan tests => 1, (need_lwp && 
+                  need_cgi &&
+                  need_module('mod_perl.c') &&
+                  need_module('include'));
 
 my @lines = <DATA>;
 my $file = catfile(Apache::Test::vars('serverroot'),
@@ -23,8 +23,8 @@ t_write_perl_script($file, @lines);
 my $response = GET '/cgi-bin/include.cgi';
 chomp(my $content = $response->content);
 
-ok t_cmp('cgi *** one *** generated with filter',
-         $content,
+ok t_cmp($content,
+         'cgi *** one *** generated with filter',
          "mod_cgi + #perl + filter");
 
 __END__

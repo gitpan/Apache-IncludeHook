@@ -8,8 +8,8 @@ use APR::Const -compile => qw(SUCCESS);
 
 use DynaLoader ();
 
-our @ISA = qw(DynaLoader Apache::RequestRec);
-our $VERSION = '2.00_02';
+our @ISA = qw(DynaLoader Apache2::RequestRec);
+our $VERSION = '2.00_04';
 
 __PACKAGE__->bootstrap($VERSION);
 
@@ -79,8 +79,8 @@ Perl (or C) output filters.
 
     package My::PrintArgs;
 
-    use Apache::RequestRec ();
-    use Apache::Const -compile => 'OK';
+    use Apache2::RequestRec ();
+    use Apache2::Const -compile => 'OK';
 
     use strict;
 
@@ -90,7 +90,7 @@ Perl (or C) output filters.
                                                                                 
       print join ' ', '***', (join ' : ', @args), '***';
 
-      return Apache::OK;
+      return Apache2::Const::OK;
     }
 
 which is almost identical to what you would see with mod_perl 1.0,
@@ -109,8 +109,11 @@ cool anyway).
 
 =head1 FEATURES/BUGS
 
-Subrequests are still a work in progress - they still don't seem
-to work properly from filters.
+Subrequests are still a work in progress - you can issue a
+subrequest but it won't enter the filter chain again.  that is,
+don't expect subrequests to SSI documents to re-enter the
+filter chain and be parsed.  this is an apache limitation,
+not a limitation of Apache::IncludeHook or mod_perl.
 
 only print STDOUT and $r->print are supported.  other methods
 of sending content to the client still need to be implemented.
@@ -121,7 +124,7 @@ Geoffrey Young E<lt>geoff@modperlcookbook.orgE<gt>
 
 =head1 COPYRIGHT
 
-Copyright (c) 2003, Geoffrey Young
+Copyright (c) 2005, Geoffrey Young
 
 All rights reserved.
 

@@ -6,3 +6,13 @@ Revision history for Perl extension Apache::IncludeHook
 2.00_02  05.10.2004
   - updates for the latest mod_perl
 
+2.00_03  01.26.2005
+  - require mod_perl 1.99_15 so that Apache-Test can
+    find need_lwp() and other need* variant functions
+  - change have_* functions to need*
+  - keep subrequests from dumping core
+  - tidy 05perl-subreq.t so that it actually will work someday
+  - fix uninitialized warning [ Torsten Foertsch ]
+
+2.00_04  04.12.2005
+  - updates for mod_perl 2.0-RC5 (1.999_22)

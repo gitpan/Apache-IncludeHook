@@ -9,9 +9,9 @@ use File::Spec::Functions qw(catfile);
 
 # Options +IncludesNOEXEC
 
-plan tests => 1, (have_lwp &&
-                  have_module('mod_perl.c') &&
-                  have_module('include'));
+plan tests => 1, (need_lwp &&
+                  need_module('mod_perl.c') &&
+                  need_module('include'));
 
 foreach my $file (qw(normal)) {
   my $line = <DATA>;
@@ -22,8 +22,8 @@ foreach my $file (qw(normal)) {
   my $response = GET "/noexec/perl-noexec-$file.shtml";
   chomp(my $content = $response->content);
 
-  ok t_cmp(q!perl [an error occurred while processing this directive] here!,
-           $content, 
+  ok t_cmp($content,
+           q!perl [an error occurred while processing this directive] here!,
            $line);
 }
 

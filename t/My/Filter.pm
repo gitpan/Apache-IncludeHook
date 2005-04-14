@@ -1,10 +1,10 @@
 package My::Filter;
 
-use Apache::Filter ();
-use Apache::RequestRec ();
+use Apache2::Filter ();
+use Apache2::RequestRec ();
 use APR::Table ();
 
-use Apache::Const -compile => qw(OK);
+use Apache2::Const -compile => qw(OK);
 
 use strict;
 
@@ -26,7 +26,7 @@ sub handler {
     $f->print(' with filter');
   }
 
-  return Apache::OK;
+  return Apache2::Const::OK;
 }
 
 1;

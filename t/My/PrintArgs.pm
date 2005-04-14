@@ -1,7 +1,7 @@
 package My::PrintArgs;
 
-use Apache::RequestRec ();
-use Apache::Const -compile => 'OK';
+use Apache2::RequestRec ();
+use Apache2::Const -compile => 'OK';
 
 use strict;
 
@@ -14,7 +14,7 @@ sub handler {
 #  $r->print(join ' ', '***', (join ' : ', @args), '***');
   print join ' ', '***', (join ' : ', @args), '***';
 
-  return Apache::OK;
+  return Apache2::Const::OK;
 }
 
 sub method_handler : method {

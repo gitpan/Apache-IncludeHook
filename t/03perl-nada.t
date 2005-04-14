@@ -10,9 +10,9 @@ use File::Spec::Functions qw(catfile);
 # <!-- #perl arg="foo" sub="..."--> tests
 # where sub prints ''
 
-plan tests => 2, (have_lwp &&
-                  have_module('mod_perl.c') &&
-                  have_module('include'));
+plan tests => 2, (need_lwp &&
+                  need_module('mod_perl.c') &&
+                  need_module('include'));
 
 foreach my $file (qw(print PRINT)) {
   my $line = <DATA>;
@@ -23,8 +23,8 @@ foreach my $file (qw(print PRINT)) {
   my $response = GET "/ssi/perl-nada-$file.shtml";
   chomp(my $content = $response->content);
 
-  ok t_cmp(q!perl  here!,
-           $content, 
+  ok t_cmp($content,
+           q!perl  here!,
            $line);
 }
 

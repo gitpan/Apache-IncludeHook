@@ -9,7 +9,7 @@ use APR::Const -compile => qw(SUCCESS);
 use DynaLoader ();
 
 our @ISA = qw(DynaLoader Apache2::RequestRec);
-our $VERSION = '2.00_04';
+our $VERSION = '2.00_05';
 
 __PACKAGE__->bootstrap($VERSION);
 

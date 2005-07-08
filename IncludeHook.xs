@@ -41,6 +41,9 @@ static int handle_perl(include_ctx_t *ctx, apr_bucket_brigade **bb,
                        request_rec *r_bogus, ap_filter_t *f,
                        apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
+  /* handle <!--#if ... --> statements correctly */
+  if( !(ctx->flags & FLAG_PRINTING) ) return APR_SUCCESS;
+
   /* prepare for 2.1 - get everything from f */
   request_rec *r     = f->r;
   server_rec  *s     = r->server;

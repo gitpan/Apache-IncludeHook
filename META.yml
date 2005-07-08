@@ -1,7 +1,7 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         Apache-IncludeHook
-version:      2.00_04
+version:      2.00_05
 version_from: IncludeHook.pm
 installdirs:  site
 requires:

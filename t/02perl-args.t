@@ -9,11 +9,11 @@ use File::Spec::Functions qw(catfile);
 
 # <!-- #perl arg="foo" sub="..."--> tests
 
-plan tests => 5, (need_lwp &&
+plan tests => 7, (need_lwp &&
                   need_module('mod_perl.c') &&
                   need_module('include'));
 
-foreach my $file (qw(empty good multi method anon)) {
+foreach my $file (qw(empty if else good multi method anon)) {
   my $line = <DATA>;
 
   next if $line =~ m/^#/;
@@ -52,6 +52,8 @@ foreach my $file (qw(empty good multi method anon)) {
 __END__
 0|perl <!--#perl arg="" sub="My::PrintArgs" --> here
 1|perl <!--#perl arg="one" sub="My::PrintArgs" --> here
+1|<!--#if expr="1" -->perl <!--#perl arg="one" sub="My::PrintArgs" --> here<!--#else -->perl <!--#perl sub="sub {print 'must not be printed'}" --> here<!--#endif -->
+1|<!--#if expr="" -->perl <!--#perl sub="sub {print 'must not be printed'}" --> here<!--#else -->perl <!--#perl arg="one" sub="My::PrintArgs" --> here<!--#endif -->
 1|perl <!--#perl arg="one" arg="two" sub="My::PrintArgs" arg="three"--> here
 1|perl <!--#perl arg="one" sub="My::PrintArgs->method_handler" --> here
 1|perl <!--#perl sub="sub {

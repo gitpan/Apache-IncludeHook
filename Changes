@@ -16,3 +16,6 @@ Revision history for Perl extension Apache::IncludeHook
 
 2.00_04  04.12.2005
   - updates for mod_perl 2.0-RC5 (1.999_22)
+
+2.00_05  07.08.2005
+  - fix if... else logic thanks to Torsten Foertsch
